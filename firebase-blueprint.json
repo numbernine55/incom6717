@@ -1,0 +1,145 @@
+{
+  "entities": {
+    "Transaction": {
+      "title": "Transaction",
+      "description": "An income or expense record belonging to an authenticated user.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who owns this transaction.",
+          "maxLength": 128
+        },
+        "type": {
+          "type": "string",
+          "description": "Whether this is an income or expense record.",
+          "enum": ["income", "expense"]
+        },
+        "amount": {
+          "type": "number",
+          "description": "Transaction amount in Thai Baht or preferred currency."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category name for this transaction.",
+          "maxLength": 100
+        },
+        "date": {
+          "type": "string",
+          "description": "Date of transaction in YYYY-MM-DD format.",
+          "maxLength": 10
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note or description for the transaction.",
+          "maxLength": 500
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method such as cash, transfer, credit card, promptpay.",
+          "maxLength": 50
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp in ISO format."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp in ISO format."
+        }
+      },
+      "required": ["userId", "type", "amount", "category", "date", "createdAt"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Monthly budget limit per category set by the user.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user.",
+          "maxLength": 128
+        },
+        "month": {
+          "type": "string",
+          "description": "Month in YYYY-MM format.",
+          "maxLength": 7
+        },
+        "category": {
+          "type": "string",
+          "description": "Budget category name.",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "number",
+          "description": "Budgeted target spending amount."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp in ISO format."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Update timestamp in ISO format."
+        }
+      },
+      "required": ["userId", "month", "category", "amount"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and settings.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth user ID.",
+          "maxLength": 128
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name.",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address.",
+          "maxLength": 120
+        },
+        "currency": {
+          "type": "string",
+          "description": "Preferred currency symbol or code.",
+          "maxLength": 10
+        },
+        "monthlyIncomeGoal": {
+          "type": "number",
+          "description": "Monthly savings or income goal."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Registration timestamp."
+        }
+      },
+      "required": ["uid"]
+    }
+  },
+  "firestore": {
+    "/transactions/{transactionId}": {
+      "schema": {
+        "$ref": "#/entities/Transaction"
+      },
+      "description": "Stores user income and expense records with strict owner isolation."
+    },
+    "/budgets/{budgetId}": {
+      "schema": {
+        "$ref": "#/entities/Budget"
+      },
+      "description": "Stores monthly category budgets per user."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Stores user profile settings where document ID equals the user UID."
+    }
+  }
+}
